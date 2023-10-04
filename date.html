@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JAMCHAT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+</head>
+<body>
+    <h1>JAMCHAT</h1>
+    <div id="chat">
+        <ul id="mensajes"></ul>
+        <form id="formulario" action="">
+            <input id="mensaje" autocomplete="off" /><button>Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('nuevo mensaje', function(data) {
+            var mensaje = data.usuario + ': ' + data.mensaje;
+            var listaMensajes = document.getElementById('mensajes');
+            var elementoMensaje = document.createElement('li');
+            elementoMensaje.innerHTML = mensaje;
+            listaMensajes.appendChild(elementoMensaje);
+        });
+
+        document.getElementById('formulario').onsubmit = function() {
+            var mensaje = document.getElementById('mensaje').value;
+            socket.emit('enviar mensaje', { usuario: 'Usuario', mensaje: mensaje });
+            document.getElementById('mensaje').value = '';
+            return false;
+        };
+    </script>
+</body>
+</html>
